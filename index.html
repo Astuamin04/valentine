@@ -11,46 +11,30 @@
     background: radial-gradient(circle at top, #ffd1dc, #ff9eb5 55%, #ff7aa2);
     font-family: system-ui, -apple-system, Segoe UI, sans-serif;
   }
-
-  /* Soft glowing vignette */
   body::before{
-    content:"";
-    position:fixed; inset:-20%;
+    content:""; position:fixed; inset:-20%;
     background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.35), transparent 40%),
                 radial-gradient(circle at 70% 80%, rgba(255,255,255,.25), transparent 45%);
-    filter: blur(30px);
-    pointer-events:none;
+    filter: blur(30px); pointer-events:none;
   }
-
   .card{
-    position:relative;
-    background: rgba(255,255,255,.28);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 28px;
-    padding: 28px 22px 26px;
+    position:relative; background: rgba(255,255,255,.28);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-radius: 28px; padding: 28px 22px 26px;
     box-shadow: 0 30px 80px rgba(255, 40, 90, .35), inset 0 1px 0 rgba(255,255,255,.6);
   }
-
   .container{ text-align:center; position:relative; z-index:2; }
   h1{
     color:#7a0b2e; font-size:clamp(1.9rem,3.8vw,2.7rem); margin:6px 0 18px;
     text-shadow:0 6px 18px rgba(255,255,255,.9);
     animation: float 2.5s ease-in-out infinite;
   }
-  .subtitle{
-    color:#8b123a; opacity:.9; margin-bottom:16px; font-size:.95rem;
-  }
+  .subtitle{ color:#8b123a; opacity:.9; margin-bottom:16px; font-size:.95rem; }
 
-  .buttons{
-    position:relative;
-    height:220px;
-    width:min(92vw,420px);
-    margin-inline:auto;
-  }
+  .buttons{ position:relative; height:220px; width:min(92vw,420px); margin-inline:auto; }
   .cloud{
     background: linear-gradient(#fff, #ffe8ef);
-    border-radius:999px; padding:14px 40px; border:none; font-size:1.1rem; cursor:pointer;
+    border-radius:999px; padding:14px 40px; border:none; font-size:1.05rem; cursor:pointer;
     position:absolute; box-shadow: 0 10px 25px rgba(255, 50, 100, .35);
     transition: left .18s ease, top .18s ease, transform .12s ease, box-shadow .2s ease;
   }
@@ -60,14 +44,12 @@
 
   @keyframes float{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 
-  /* Floating hearts */
   .hearts span{
     position:absolute; bottom:-40px; font-size:18px; opacity:.9;
     animation: rise linear infinite; filter: drop-shadow(0 6px 10px rgba(255, 60, 120, .45));
   }
   @keyframes rise{ to{ transform:translateY(-120vh) rotate(360deg); opacity:0 } }
 
-  /* Subtle sparkles */
   .sparkle i{
     position:absolute; font-size:12px; animation: sparkle .9s ease-out forwards;
     filter: drop-shadow(0 4px 8px rgba(255,255,255,.8));
@@ -82,8 +64,7 @@
   .success .box{
     background: rgba(255,255,255,.3);
     backdrop-filter: blur(12px);
-    border-radius: 28px;
-    padding: 28px 24px;
+    border-radius: 28px; padding: 28px 24px;
     box-shadow: 0 30px 80px rgba(255, 40, 90, .35), inset 0 1px 0 rgba(255,255,255,.6);
   }
   .success small{ display:block; opacity:.95; margin-top:10px; font-size:1rem }
@@ -95,16 +76,27 @@
 
   <div class="card">
     <div class="container">
-      <div class="subtitle">A tiny question from my heart to yours 💗</div>
-      <h1>Will you be my Valentine? 💖</h1>
+      <div class="subtitle" id="subtitle">Quick warm-up questions 💗</div>
+      <h1 id="question">Do you like cute surprises? ✨</h1>
       <div class="buttons" id="arena">
-        <button id="yes" class="cloud">Yes 💕</button>
-        <button id="no"  class="cloud">No 💔</button>
+        <button id="yes" class="cloud">Yes 😊</button>
+        <button id="no"  class="cloud">No 🙈</button>
       </div>
     </div>
   </div>
 
 <script>
+  const questions = [
+    "Do you like cute surprises? ✨",
+    "Do you enjoy little romantic gestures? 🌹",
+    "Should we make more fun memories together? 💫",
+    "Will you be my Valentine? 💖"
+  ];
+
+  let step = 0;
+
+  const subtitle = document.getElementById("subtitle");
+  const questionEl = document.getElementById("question");
   const noBtn = document.getElementById("no");
   const yesBtn = document.getElementById("yes");
   const arena = document.getElementById("arena");
@@ -135,18 +127,18 @@
     noBtn.style.top  = yPos + "px";
   }
 
+  function nextQuestion(){
+    if (step < questions.length - 1) {
+      step++;
+      subtitle.textContent = step < 3 ? "Just one more 😉" : "Okay… final question 💘";
+      questionEl.textContent = questions[step];
+    } else {
+      showSuccess();
+    }
+  }
+
   noBtn.addEventListener("mouseover", moveNoNearYes);
   noBtn.addEventListener("touchstart", moveNoNearYes, { passive:true });
-
-  function spawnHeart(){
-    const s=document.createElement("span");
-    s.textContent = Math.random()>.5 ? "💗" : "💖";
-    s.style.left = Math.random()*100 + "vw";
-    s.style.animationDuration = (6 + Math.random()*6) + "s";
-    heartsWrap.appendChild(s);
-    setTimeout(()=>s.remove(), 12000);
-  }
-  setInterval(spawnHeart, 650);
 
   yesBtn.addEventListener("mousemove", (e)=>{
     for(let i=0;i<2;i++){
@@ -159,15 +151,27 @@
     }
   });
 
-  yesBtn.addEventListener("click", ()=>{
+  yesBtn.addEventListener("click", nextQuestion);
+
+  function spawnHeart(){
+    const s=document.createElement("span");
+    s.textContent = Math.random()>.5 ? "💗" : "💖";
+    s.style.left = Math.random()*100 + "vw";
+    s.style.animationDuration = (6 + Math.random()*6) + "s";
+    heartsWrap.appendChild(s);
+    setTimeout(()=>s.remove(), 12000);
+  }
+  setInterval(spawnHeart, 650);
+
+  function showSuccess(){
     document.body.innerHTML = `
       <div class="success">
         <div class="box">
           Yayyy! 💘<br/>You just made my day 😍
-          <small>Can’t wait to make more cute moments together ✨</small>
+          <small>This little journey was worth it ✨</small>
         </div>
       </div>`;
-  });
+  }
 </script>
 </body>
 </html>
