@@ -127,16 +127,6 @@
     noBtn.style.top  = yPos + "px";
   }
 
-  function nextQuestion(){
-    if (step < questions.length - 1) {
-      step++;
-      subtitle.textContent = step < 3 ? "Just one more 😉" : "Okay… final question 💘";
-      questionEl.textContent = questions[step];
-    } else {
-      showSuccess();
-    }
-  }
-
   noBtn.addEventListener("mouseover", moveNoNearYes);
   noBtn.addEventListener("touchstart", moveNoNearYes, { passive:true });
 
@@ -151,7 +141,15 @@
     }
   });
 
-  yesBtn.addEventListener("click", nextQuestion);
+  yesBtn.addEventListener("click", ()=>{
+    if (step < questions.length - 1) {
+      step++;
+      questionEl.textContent = questions[step];
+      subtitle.textContent = step < 3 ? "Just one more 😉" : "Okay… final question 💘";
+    } else {
+      showSuccess();
+    }
+  });
 
   function spawnHeart(){
     const s=document.createElement("span");
