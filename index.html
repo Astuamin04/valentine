@@ -8,31 +8,32 @@
   *{box-sizing:border-box}
   body{
     margin:0;height:100vh;overflow:hidden;display:grid;place-items:center;
-    background: linear-gradient(135deg, #a1c4fd, #c2e9fb, #fbc2eb);
+    background: linear-gradient(135deg, #89f7fe, #66a6ff);
     font-family: system-ui, -apple-system, Segoe UI, sans-serif;
   }
   .container{ text-align:center; position:relative; z-index:2 }
   h1{
-    color:#0f172a; font-size:clamp(1.8rem,3.5vw,2.6rem); margin-bottom:24px;
+    color:#0b132b; font-size:clamp(1.8rem,3.5vw,2.6rem); margin-bottom:24px;
     text-shadow:0 4px 14px rgba(255,255,255,.5);
     animation: float 2.5s ease-in-out infinite;
   }
   .buttons{
     position:relative;
-    height:220px;
+    height:240px;
     width:min(92vw,420px);
     margin-inline:auto;
-    border-radius:20px;
   }
   .cloud{
     background: linear-gradient(#fff, #f6f7fb);
     border-radius:999px; padding:14px 38px; border:none; font-size:1.1rem; cursor:pointer;
     position:absolute; box-shadow:0 10px 25px rgba(0,0,0,.2);
-    transition: transform .15s ease, left .18s ease, top .18s ease, box-shadow .2s ease;
+    transition: left .18s ease, top .18s ease, box-shadow .2s ease;
   }
   .cloud:hover{ box-shadow:0 14px 30px rgba(0,0,0,.28) }
-  #yes{ color:#ff4b6e; left:50%; top:90px; transform:translateX(-120px); }
-  #no { color:#6b7280; left:50%; top:90px; transform:translateX(40px); }
+
+  /* Initial positions (no transforms) */
+  #yes{ color:#ff4b6e; left:60px; top:110px; }
+  #no { color:#6b7280; left:220px; top:110px; }
 
   @keyframes float{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 
@@ -44,8 +45,8 @@
 
   .success{
     height:100vh; display:grid; place-items:center; text-align:center; padding:24px;
-    background: linear-gradient(135deg, #a1c4fd, #c2e9fb, #fbc2eb);
-    color:#0f172a; font-size:clamp(1.6rem,4vw,2.4rem);
+    background: linear-gradient(135deg, #89f7fe, #66a6ff);
+    color:#0b132b; font-size:clamp(1.6rem,4vw,2.4rem);
   }
   .success small{ display:block; opacity:.9; margin-top:10px; font-size:1rem }
 </style>
@@ -70,19 +71,18 @@
   function clamp(v, min, max){ return Math.min(Math.max(v, min), max); }
 
   function moveNoNearYes(){
-    const a = arena.getBoundingClientRect();
-    const y = yesBtn.getBoundingClientRect();
-
     const pad = 8;
     const maxX = arena.clientWidth  - noBtn.offsetWidth  - pad;
     const maxY = arena.clientHeight - noBtn.offsetHeight - pad;
 
-    // positions near Yes (left/right/top/bottom)
+    const y = yesBtn.getBoundingClientRect();
+    const a = arena.getBoundingClientRect();
+
     const candidates = [
       { x: (y.left - a.left) - noBtn.offsetWidth - 16, y: (y.top - a.top) },
-      { x: (y.right - a.left) + 16,                      y: (y.top - a.top) },
-      { x: (y.left - a.left),                            y: (y.top - a.top) - noBtn.offsetHeight - 16 },
-      { x: (y.left - a.left),                            y: (y.bottom - a.top) + 16 }
+      { x: (y.right - a.left) + 16,                    y: (y.top - a.top) },
+      { x: (y.left - a.left),                          y: (y.top - a.top) - noBtn.offsetHeight - 16 },
+      { x: (y.left - a.left),                          y: (y.bottom - a.top) + 16 }
     ];
 
     let p = candidates[Math.floor(Math.random()*candidates.length)];
@@ -104,7 +104,7 @@
     heartsWrap.appendChild(s);
     setTimeout(()=>s.remove(),12000);
   }
-  setInterval(spawnHeart,700);
+  setInterval(spawnHeart,800);
 
   yesBtn.addEventListener("click", ()=>{
     document.body.innerHTML = `
