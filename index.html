@@ -5,40 +5,61 @@
 <title>Be My Valentine 💘</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
+  :root{
+    --pink:#ff6f91; --rose:#ff9eb5; --peach:#ffd1dc; --ink:#7a0b2e;
+  }
   *{ box-sizing:border-box }
   body{
     margin:0; height:100vh; overflow:hidden; display:grid; place-items:center;
-    background: radial-gradient(circle at top, #ffd1dc, #ff9eb5 55%, #ff7aa2);
+    background: linear-gradient(120deg, #ff6f91, #ff9eb5, #ffd1dc);
+    background-size: 200% 200%;
+    animation: bgMove 14s ease infinite;
     font-family: system-ui, -apple-system, Segoe UI, sans-serif;
   }
-  .success{
-    position:relative;
-    height:100vh; display:grid; place-items:center; text-align:center; padding:24px;
-    background: radial-gradient(circle at top, #ffd1dc, #ff9eb5 55%, #ff7aa2);
-    color:#7a0b2e; font-size:clamp(1.6rem,4vw,2.4rem);
-    overflow:hidden;
-  }
-  .box{
-    position:relative;
-    z-index:2;
-    background: rgba(255,255,255,.35);
-    backdrop-filter: blur(12px);
-    border-radius: 28px; padding: 28px 24px;
-    box-shadow: 0 30px 80px rgba(255, 40, 90, .35), inset 0 1px 0 rgba(255,255,255,.6);
-    animation: glow 2.5s ease-in-out infinite;
-  }
-  @keyframes glow{
-    0%,100%{ box-shadow: 0 30px 80px rgba(255, 40, 90, .35), inset 0 1px 0 rgba(255,255,255,.6); }
-    50%{ box-shadow: 0 30px 100px rgba(255, 40, 90, .55), inset 0 1px 0 rgba(255,255,255,.7); }
-  }
-  .actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:16px }
-  .btn{
-    border:none; border-radius:999px; padding:10px 16px; cursor:pointer;
-    background:#fff; color:#7a0b2e; box-shadow:0 10px 25px rgba(0,0,0,.2);
+  @keyframes bgMove{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
   }
 
-  /* Effects layers */
-  .hearts span, .petals span, .balloons span, .confetti i, canvas{
+  .scene{
+    position:relative; width:min(92vw,520px); perspective:900px;
+  }
+  .card{
+    position:relative;
+    background: rgba(255,255,255,.28);
+    backdrop-filter: blur(14px);
+    border-radius: 28px;
+    padding: 26px 22px 24px;
+    box-shadow: 0 30px 80px rgba(255, 40, 90, .35), inset 0 1px 0 rgba(255,255,255,.6);
+    transform-style: preserve-3d;
+    transition: transform .2s ease;
+  }
+  .glow{
+    position:absolute; inset:-1px; border-radius:28px; pointer-events:none;
+    box-shadow: 0 0 0 0 rgba(255,111,145,.0);
+    animation: glow 2.8s ease-in-out infinite;
+  }
+  @keyframes glow{
+    0%,100%{ box-shadow: 0 0 0 0 rgba(255,111,145,.0) }
+    50%{ box-shadow: 0 0 40px 8px rgba(255,111,145,.35) }
+  }
+
+  .title{ color:var(--ink); font-size:clamp(1.9rem,3.8vw,2.6rem); text-align:center; margin:6px 0 10px; }
+  .subtitle{ color:#8b123a; text-align:center; opacity:.9; margin-bottom:12px; }
+  .buttons{ position:relative; height:220px; }
+  .btn{
+    position:absolute; border:none; border-radius:999px; padding:14px 38px; cursor:pointer;
+    background: linear-gradient(#fff, #ffe8ef);
+    box-shadow: 0 10px 25px rgba(255, 50, 100, .35);
+    transition: left .18s ease, top .18s ease, transform .12s ease, box-shadow .2s ease;
+    color:#ff2f6d; font-size:1.05rem;
+  }
+  .btn:hover{ transform: translateY(-1px) scale(1.01); box-shadow: 0 16px 36px rgba(255, 50, 100, .45) }
+  #yes{ left:70px; top:110px }
+  #no { left:230px; top:110px; color:#9ca3af }
+
+  .hearts span,.petals span,.balloons span,.confetti i{
     position:absolute; pointer-events:none;
   }
   .hearts span{ font-size:18px; animation: rise 6s linear infinite }
@@ -49,158 +70,141 @@
   @keyframes balloon{ to{ transform:translateY(-120vh); opacity:0 } }
   .confetti i{ width:8px; height:12px; background:#fff; animation: confetti 1.2s ease-out forwards }
   @keyframes confetti{ to{ transform:translateY(120px) rotate(180deg); opacity:0 } }
+
+  canvas{ position:fixed; inset:0; pointer-events:none }
+
+  .success{
+    position:fixed; inset:0; display:grid; place-items:center; text-align:center; padding:24px;
+    background: radial-gradient(circle at top, #ffd1dc, #ff9eb5 55%, #ff7aa2);
+    color:#7a0b2e;
+  }
+  .box{
+    background: rgba(255,255,255,.35);
+    backdrop-filter: blur(12px);
+    border-radius: 28px; padding: 28px 24px;
+    box-shadow: 0 30px 80px rgba(255, 40, 90, .35), inset 0 1px 0 rgba(255,255,255,.6);
+    animation: glow 2.5s ease-in-out infinite;
+  }
+  .actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:16px }
+  .pill{ border:none; border-radius:999px; padding:10px 16px; cursor:pointer; background:#fff; color:#7a0b2e; box-shadow:0 10px 25px rgba(0,0,0,.2) }
 </style>
 </head>
 <body>
+<canvas id="fw"></canvas>
 
-<div class="success" id="success">
-  <canvas id="fireworks"></canvas>
-
-  <div class="box">
-    <div id="typed"></div>
-    <small style="display:block; margin-top:8px;">So… coffee sometime? ☕😉</small>
-    <div class="actions">
-      <button class="btn" id="save">Save this moment 💗</button>
-      <button class="btn" id="share">Share 💌</button>
-      <button class="btn" id="replay">Replay 🔄</button>
+<div class="scene">
+  <div class="card" id="card">
+    <div class="glow"></div>
+    <div class="subtitle" id="sub">Quick warm-up 💗</div>
+    <h1 class="title" id="q">Do you like cute surprises? ✨</h1>
+    <div class="buttons" id="arena">
+      <button class="btn" id="yes">Yes 😊</button>
+      <button class="btn" id="no">No 🙈</button>
     </div>
   </div>
-
-  <div class="hearts" id="hearts"></div>
-  <div class="petals" id="petals"></div>
-  <div class="balloons" id="balloons"></div>
-  <div class="confetti" id="confetti"></div>
 </div>
 
-<script>
-  // Typing effect
-  const msg = "Yayyy! 💘 You just made my day 😍";
-  const typed = document.getElementById("typed");
-  let i=0;
-  const typer = setInterval(()=>{
-    typed.textContent += msg[i++] || "";
-    if(i>msg.length) clearInterval(typer);
-  }, 50);
+<div class="hearts" id="hearts"></div>
+<div class="petals" id="petals"></div>
+<div class="balloons" id="balloons"></div>
+<div class="confetti" id="confetti"></div>
 
-  // Floating effects
+<script>
+  // 3D tilt
+  const card = document.getElementById('card');
+  document.addEventListener('mousemove', e=>{
+    const r = card.getBoundingClientRect();
+    const cx = r.left + r.width/2, cy = r.top + r.height/2;
+    const dx = (e.clientX - cx)/r.width, dy = (e.clientY - cy)/r.height;
+    card.style.transform = `rotateY(${dx*10}deg) rotateX(${-dy*10}deg)`;
+  });
+  document.addEventListener('mouseleave', ()=> card.style.transform = 'rotateY(0) rotateX(0)');
+
+  // Questions
+  const questions = [
+    "Do you like cute surprises? ✨",
+    "Do you enjoy little romantic gestures? 🌹",
+    "Should we make more fun memories together? 💫",
+    "Will you be my Valentine? 💖"
+  ];
+  let step=0;
+  const qEl=document.getElementById('q');
+  const sub=document.getElementById('sub');
+  const yes=document.getElementById('yes');
+  const no=document.getElementById('no');
+  const arena=document.getElementById('arena');
+
+  function clamp(v,min,max){ return Math.min(Math.max(v,min),max); }
+  function moveNo(){
+    const pad=8;
+    const maxX = arena.clientWidth - no.offsetWidth - pad;
+    const maxY = arena.clientHeight - no.offsetHeight - pad;
+    const yR = yes.getBoundingClientRect();
+    const aR = arena.getBoundingClientRect();
+    const spots=[
+      {x:(yR.left-aR.left)-no.offsetWidth-18, y:(yR.top-aR.top)},
+      {x:(yR.right-aR.left)+18, y:(yR.top-aR.top)},
+      {x:(yR.left-aR.left), y:(yR.top-aR.top)-no.offsetHeight-18},
+      {x:(yR.left-aR.left), y:(yR.bottom-aR.top)+18}
+    ];
+    const p=spots[Math.floor(Math.random()*spots.length)];
+    no.style.left = clamp(p.x,pad,maxX)+'px';
+    no.style.top  = clamp(p.y,pad,maxY)+'px';
+  }
+  no.addEventListener('mouseover', moveNo);
+  no.addEventListener('touchstart', moveNo, {passive:true});
+
+  yes.addEventListener('click', ()=>{
+    if(step < questions.length-1){
+      step++;
+      qEl.textContent = questions[step];
+      sub.textContent = step<3 ? "Just one more 😉" : "Final question 💘";
+    } else showSuccess();
+  });
+
+  // Effects
   function spawn(container, char, dur){
     const s=document.createElement("span");
-    s.textContent = char;
-    s.style.left = Math.random()*100+"vw";
-    container.appendChild(s);
-    setTimeout(()=>s.remove(), dur);
+    s.textContent=char; s.style.left=Math.random()*100+"vw";
+    container.appendChild(s); setTimeout(()=>s.remove(), dur);
   }
-  setInterval(()=>spawn(document.getElementById("hearts"), "💗", 6000), 400);
-  setInterval(()=>spawn(document.getElementById("petals"), "🌸", 6000), 600);
-  setInterval(()=>spawn(document.getElementById("balloons"), "🎈", 8000), 900);
+  setInterval(()=>spawn(document.getElementById('hearts'),"💗",6000),400);
+  setInterval(()=>spawn(document.getElementById('petals'),"🌸",6000),650);
+  setInterval(()=>spawn(document.getElementById('balloons'),"🎈",8000),900);
 
-  // Confetti burst
-  for(let i=0;i<50;i++){
-    const c=document.createElement("i");
-    c.style.left = (window.innerWidth/2 + (Math.random()*160-80))+"px";
-    c.style.top  = (window.innerHeight/2)+"px";
-    c.style.background = ["#fff","#ffd1dc","#ffe3ec","#fad0c4"][i%4];
-    document.getElementById("confetti").appendChild(c);
-    setTimeout(()=>c.remove(),1200);
-  }
-
-  // Fireworks (canvas)
-  const canvas = document.getElementById("fireworks");
-  const ctx = canvas.getContext("2d");
-  function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  window.addEventListener("resize", resize); resize();
-
-  const fireworks = [];
-  function launch(){
-    fireworks.push({
-      x: Math.random()*canvas.width,
-      y: canvas.height,
-      tx: Math.random()*canvas.width,
-      ty: Math.random()*canvas.height*0.5,
-      p: []
-    });
-  }
-  setInterval(launch, 800);
-
-  function update(){
+  // Fireworks
+  const canvas=document.getElementById('fw'), ctx=canvas.getContext('2d');
+  function resize(){ canvas.width=innerWidth; canvas.height=innerHeight } resize(); addEventListener('resize',resize);
+  let rockets=[], particles=[];
+  setInterval(()=>rockets.push({x:Math.random()*canvas.width,y:canvas.height,ty:Math.random()*canvas.height*0.5}),900);
+  function loop(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    fireworks.forEach((f, idx)=>{
-      f.y -= 10;
-      if(f.y < f.ty){
-        for(let i=0;i<30;i++){
-          f.p.push({
-            x: f.x, y: f.y,
-            vx: (Math.random()-0.5)*6,
-            vy: (Math.random()-0.5)*6,
-            life: 60,
-            color: `hsl(${Math.random()*360},100%,60%)`
-          });
-        }
-        fireworks.splice(idx,1);
-      } else {
-        ctx.fillStyle="#fff";
-        ctx.fillRect(f.x,f.y,2,2);
-      }
+    rockets.forEach((r,i)=>{
+      r.y-=8; ctx.fillRect(r.x,r.y,2,2);
+      if(r.y<r.ty){ for(let j=0;j<30;j++) particles.push({x:r.x,y:r.y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:60,color:`hsl(${Math.random()*360},100%,60%)`}); rockets.splice(i,1); }
     });
+    particles.forEach((p,i)=>{ p.x+=p.vx; p.y+=p.vy; p.life--; ctx.fillStyle=p.color; ctx.fillRect(p.x,p.y,3,3); if(p.life<=0) particles.splice(i,1); });
+    requestAnimationFrame(loop);
+  } loop();
 
-    fireworks.forEach(()=>{});
-    fireworksParticles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.life--;
-      ctx.fillStyle=p.color;
-      ctx.fillRect(p.x,p.y,3,3);
-    });
-    fireworksParticles = fireworksParticles.filter(p=>p.life>0);
-    requestAnimationFrame(update);
+  function showSuccess(){
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="success">
+        <div class="box">
+          <div id="typed"></div>
+          <small>So… coffee sometime? ☕😉</small>
+          <div class="actions">
+            <button class="pill" onclick="alert('Tip: Take a screenshot 😉')">Save this moment 💗</button>
+            <button class="pill" onclick="window.open('https://wa.me/?text='+encodeURIComponent('I just clicked YES on your Valentine page 💖'),'_blank')">Share 💌</button>
+            <button class="pill" onclick="location.reload()">Replay 🔄</button>
+          </div>
+        </div>
+      </div>
+    `);
+    const msg="Yayyy! 💘 You just made my day 😍";
+    let i=0, t=document.getElementById('typed');
+    const id=setInterval(()=>{ t.textContent+=msg[i++]||""; if(i>msg.length) clearInterval(id); },40);
   }
-
-  let fireworksParticles = [];
-  setInterval(()=>{}, 1000);
-
-  // Patch: collect particles
-  const origLaunch = launch;
-  function patchedLaunch(){ origLaunch(); }
-  function explode(f){
-    for(let i=0;i<30;i++){
-      fireworksParticles.push({
-        x: f.x, y: f.y,
-        vx: (Math.random()-0.5)*6,
-        vy: (Math.random()-0.5)*6,
-        life: 60,
-        color: `hsl(${Math.random()*360},100%,60%)`
-      });
-    }
-  }
-
-  // Override update with explosion
-  function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    fireworks.forEach((f, idx)=>{
-      f.y -= 8;
-      if(f.y < f.ty){
-        explode(f);
-        fireworks.splice(idx,1);
-      } else {
-        ctx.fillStyle="#fff";
-        ctx.fillRect(f.x,f.y,2,2);
-      }
-    });
-    fireworksParticles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.life--;
-      ctx.fillStyle=p.color;
-      ctx.fillRect(p.x,p.y,3,3);
-    });
-    fireworksParticles = fireworksParticles.filter(p=>p.life>0);
-    requestAnimationFrame(animate);
-  }
-  animate();
-
-  // Actions
-  document.getElementById("save").onclick = ()=> alert("Tip: Take a screenshot to save this moment 😉");
-  document.getElementById("share").onclick = ()=> {
-    const txt = encodeURIComponent("I just clicked YES on your Valentine page 💖");
-    window.open("https://wa.me/?text="+txt, "_blank");
-  };
-  document.getElementById("replay").onclick = ()=> location.reload();
 </script>
 </body>
 </html>
