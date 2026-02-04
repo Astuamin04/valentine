@@ -6,62 +6,57 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
   :root{
-    --pink:#ff6f91; --rose:#ff9eb5; --peach:#ffd1dc; --ink:#7a0b2e;
+    --bg1:#ff6f91; --bg2:#ff9eb5; --bg3:#ffd1dc; --ink:#7a0b2e;
   }
   *{ box-sizing:border-box }
   body{
     margin:0; height:100vh; overflow:hidden; display:grid; place-items:center;
-    background: linear-gradient(120deg, #ff6f91, #ff9eb5, #ffd1dc);
+    background: linear-gradient(120deg, var(--bg1), var(--bg2), var(--bg3));
     background-size: 200% 200%;
     animation: bgMove 14s ease infinite;
     font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    transition: background .4s ease;
   }
-  @keyframes bgMove{
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
+  body.night{
+    --bg1:#0b1026; --bg2:#141b3a; --bg3:#1f2a55; --ink:#f7d9ff;
   }
+  @keyframes bgMove{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
 
-  .scene{
-    position:relative; width:min(92vw,520px); perspective:900px;
-  }
+  .hud{ position:fixed; top:12px; left:12px; display:flex; gap:8px; z-index:9 }
+  .pill{ border:none; border-radius:999px; padding:8px 12px; cursor:pointer; background:#fff; color:#7a0b2e; box-shadow:0 10px 25px rgba(0,0,0,.2) }
+  body.night .pill{ background:#0f1533; color:#ffd1dc }
+
+  .scene{ position:relative; width:min(92vw,520px); perspective:900px }
   .card{
-    position:relative;
-    background: rgba(255,255,255,.28);
-    backdrop-filter: blur(14px);
-    border-radius: 28px;
-    padding: 26px 22px 24px;
+    position:relative; background: rgba(255,255,255,.28);
+    backdrop-filter: blur(14px); border-radius:28px; padding:24px 20px 22px;
     box-shadow: 0 30px 80px rgba(255, 40, 90, .35), inset 0 1px 0 rgba(255,255,255,.6);
-    transform-style: preserve-3d;
-    transition: transform .2s ease;
+    transform-style:preserve-3d; transition: transform .2s ease;
   }
-  .glow{
-    position:absolute; inset:-1px; border-radius:28px; pointer-events:none;
-    box-shadow: 0 0 0 0 rgba(255,111,145,.0);
-    animation: glow 2.8s ease-in-out infinite;
-  }
-  @keyframes glow{
-    0%,100%{ box-shadow: 0 0 0 0 rgba(255,111,145,.0) }
-    50%{ box-shadow: 0 0 40px 8px rgba(255,111,145,.35) }
-  }
+  body.night .card{ background: rgba(20,24,60,.45); box-shadow: 0 30px 80px rgba(0,0,0,.45) }
+  .glow{ position:absolute; inset:-1px; border-radius:28px; pointer-events:none; animation: glow 2.8s ease-in-out infinite }
+  @keyframes glow{ 0%,100%{ box-shadow:0 0 0 0 rgba(255,111,145,.0)} 50%{ box-shadow:0 0 40px 8px rgba(255,111,145,.35)} }
+  body.night .glow{ animation: none }
 
-  .title{ color:var(--ink); font-size:clamp(1.9rem,3.8vw,2.6rem); text-align:center; margin:6px 0 10px; }
-  .subtitle{ color:#8b123a; text-align:center; opacity:.9; margin-bottom:12px; }
-  .buttons{ position:relative; height:220px; }
+  .title{ color:var(--ink); font-size:clamp(1.9rem,3.8vw,2.6rem); text-align:center; margin:6px 0 8px }
+  .subtitle{ color:color-mix(in srgb, var(--ink) 80%, #000 20%); text-align:center; opacity:.9; margin-bottom:8px }
+  .progress{ display:flex; justify-content:center; gap:6px; margin-bottom:8px }
+  .dot{ width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.6) }
+  .dot.on{ background:#ff2f6d }
+
+  .buttons{ position:relative; height:220px }
   .btn{
     position:absolute; border:none; border-radius:999px; padding:14px 38px; cursor:pointer;
-    background: linear-gradient(#fff, #ffe8ef);
-    box-shadow: 0 10px 25px rgba(255, 50, 100, .35);
-    transition: left .18s ease, top .18s ease, transform .12s ease, box-shadow .2s ease;
-    color:#ff2f6d; font-size:1.05rem;
+    background: linear-gradient(#fff, #ffe8ef); color:#ff2f6d; font-size:1.05rem;
+    box-shadow:0 10px 25px rgba(255, 50, 100, .35);
+    transition: left .18s ease, top .18s ease, transform .12s ease, box-shadow .2s ease, filter .2s ease;
   }
   .btn:hover{ transform: translateY(-1px) scale(1.01); box-shadow: 0 16px 36px rgba(255, 50, 100, .45) }
   #yes{ left:70px; top:110px }
   #no { left:230px; top:110px; color:#9ca3af }
+  .locked{ filter: grayscale(.7) blur(.3px); pointer-events:none }
 
-  .hearts span,.petals span,.balloons span,.confetti i{
-    position:absolute; pointer-events:none;
-  }
+  .hearts span,.petals span,.balloons span,.confetti i{ position:absolute; pointer-events:none }
   .hearts span{ font-size:18px; animation: rise 6s linear infinite }
   @keyframes rise{ to{ transform:translateY(-120vh) rotate(360deg); opacity:0 } }
   .petals span{ font-size:18px; animation: fall 6s linear infinite }
@@ -79,22 +74,28 @@
     color:#7a0b2e;
   }
   .box{
-    background: rgba(255,255,255,.35);
-    backdrop-filter: blur(12px);
-    border-radius: 28px; padding: 28px 24px;
-    box-shadow: 0 30px 80px rgba(255, 40, 90, .35), inset 0 1px 0 rgba(255,255,255,.6);
-    animation: glow 2.5s ease-in-out infinite;
+    background: rgba(255,255,255,.35); backdrop-filter: blur(12px);
+    border-radius:28px; padding:26px 22px; box-shadow:0 30px 80px rgba(255, 40, 90, .35);
   }
   .actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:16px }
-  .pill{ border:none; border-radius:999px; padding:10px 16px; cursor:pointer; background:#fff; color:#7a0b2e; box-shadow:0 10px 25px rgba(0,0,0,.2) }
 </style>
 </head>
 <body>
 <canvas id="fw"></canvas>
 
+<div class="hud">
+  <button class="pill" id="toggleNight">🌙 Night</button>
+  <button class="pill" data-theme="pink">💖 Pink</button>
+  <button class="pill" data-theme="lav">💜 Lavender</button>
+  <button class="pill" data-theme="gal">🌌 Galaxy</button>
+</div>
+
 <div class="scene">
   <div class="card" id="card">
     <div class="glow"></div>
+    <div class="progress" id="progress">
+      <span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>
     <div class="subtitle" id="sub">Quick warm-up 💗</div>
     <h1 class="title" id="q">Do you like cute surprises? ✨</h1>
     <div class="buttons" id="arena">
@@ -110,6 +111,9 @@
 <div class="confetti" id="confetti"></div>
 
 <script>
+  // Reset to beginning on refresh (no persistence used)
+  let step = 0;
+
   // 3D tilt
   const card = document.getElementById('card');
   document.addEventListener('mousemove', e=>{
@@ -120,6 +124,16 @@
   });
   document.addEventListener('mouseleave', ()=> card.style.transform = 'rotateY(0) rotateX(0)');
 
+  // Themes
+  const themeBtns = document.querySelectorAll('[data-theme]');
+  themeBtns.forEach(b=>b.onclick=()=>{
+    const t=b.dataset.theme;
+    if(t==='pink'){ document.body.style.setProperty('--bg1','#ff6f91'); document.body.style.setProperty('--bg2','#ff9eb5'); document.body.style.setProperty('--bg3','#ffd1dc'); }
+    if(t==='lav'){ document.body.style.setProperty('--bg1','#b892ff'); document.body.style.setProperty('--bg2','#d8b4fe'); document.body.style.setProperty('--bg3','#fde2ff'); }
+    if(t==='gal'){ document.body.style.setProperty('--bg1','#0b1026'); document.body.style.setProperty('--bg2','#141b3a'); document.body.style.setProperty('--bg3','#1f2a55'); }
+  });
+  document.getElementById('toggleNight').onclick=()=> document.body.classList.toggle('night');
+
   // Questions
   const questions = [
     "Do you like cute surprises? ✨",
@@ -127,12 +141,12 @@
     "Should we make more fun memories together? 💫",
     "Will you be my Valentine? 💖"
   ];
-  let step=0;
   const qEl=document.getElementById('q');
   const sub=document.getElementById('sub');
   const yes=document.getElementById('yes');
   const no=document.getElementById('no');
   const arena=document.getElementById('arena');
+  const dots=[...document.querySelectorAll('.dot')];
 
   function clamp(v,min,max){ return Math.min(Math.max(v,min),max); }
   function moveNo(){
@@ -154,11 +168,15 @@
   no.addEventListener('mouseover', moveNo);
   no.addEventListener('touchstart', moveNo, {passive:true});
 
+  function updateUI(){
+    qEl.textContent = questions[step];
+    sub.textContent = step<3 ? "Just one more 😉" : "Final question 💘";
+    dots.forEach((d,i)=> d.classList.toggle('on', i<=step));
+  }
+
   yes.addEventListener('click', ()=>{
     if(step < questions.length-1){
-      step++;
-      qEl.textContent = questions[step];
-      sub.textContent = step<3 ? "Just one more 😉" : "Final question 💘";
+      step++; updateUI();
     } else showSuccess();
   });
 
@@ -172,7 +190,7 @@
   setInterval(()=>spawn(document.getElementById('petals'),"🌸",6000),650);
   setInterval(()=>spawn(document.getElementById('balloons'),"🎈",8000),900);
 
-  // Fireworks
+  // Fireworks canvas
   const canvas=document.getElementById('fw'), ctx=canvas.getContext('2d');
   function resize(){ canvas.width=innerWidth; canvas.height=innerHeight } resize(); addEventListener('resize',resize);
   let rockets=[], particles=[];
