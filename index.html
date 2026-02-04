@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Be My Valentine 💘</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+      overflow: hidden;
+    }
+    .container { text-align: center; }
+    h1 { color: #fff; font-size: 2.2rem; margin-bottom: 30px; text-shadow: 0 2px 8px rgba(0,0,0,.2); }
+    .buttons { position: relative; height: 200px; }
+    button {
+      border: none; padding: 14px 36px; font-size: 1.1rem; cursor: pointer;
+      border-radius: 999px; position: absolute; transition: transform .15s ease, left .2s ease, top .2s ease;
+      box-shadow: 0 8px 20px rgba(0,0,0,.2); background: #fff;
+    }
+    #yes { color: #ff4b6e; left: 50%; transform: translateX(-120px); }
+    #no  { color: #555; left: 50%; transform: translateX(40px); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Will you be my Valentine? 💖</h1>
+    <div class="buttons">
+      <button id="yes" onclick="yesClicked()">Yes 💕</button>
+      <button id="no">No 💔</button>
+    </div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById("no");
+    noBtn.addEventListener("mouseover", () => {
+      const pad = 20;
+      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - pad);
+      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - pad);
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+    });
+
+    function yesClicked() {
+      document.body.innerHTML = `
+        <div style="height:100vh;display:flex;align-items:center;justify-content:center;
+        background:linear-gradient(135deg,#ff9a9e,#fad0c4);color:#fff;text-align:center;
+        font-family:system-ui,Segoe UI,sans-serif;font-size:2.2rem;">
+          Yayyy! 💘<br/>You just made my day 😍
+        </div>`;
+    }
+  </script>
+</body>
+</html>
